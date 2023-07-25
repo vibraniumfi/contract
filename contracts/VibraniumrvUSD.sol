@@ -493,8 +493,9 @@ contract VibraniumrvUSD is RVUSD, Governable {
 
     function mintSwap(address _account, uint _amount) external {
         require(msg.sender == vUSD, "INPUT_WRONG");
+        uint256 sharesAmount = getSharesByMintedVUSD(_amount);
         esvibMinter.refreshReward(_account);
-        _mintShares(_account, _amount);
+        _mintShares(_account, sharesAmount);
         _saveReport();
         totalRVUSDCirculation += _amount;
     }
@@ -505,7 +506,7 @@ contract VibraniumrvUSD is RVUSD, Governable {
         esvibMinter.refreshReward(msg.sender);
         _saveReport();
         totalRVUSDCirculation -= _amount;
-        ISwap(vUSD).mintSwap(msg.sender, sharesAmount);
+        ISwap(vUSD).mintSwap(msg.sender, _amount);
         emit Burn(msg.sender, msg.sender, _amount, block.timestamp);
     }
 
