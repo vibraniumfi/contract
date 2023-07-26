@@ -134,6 +134,10 @@ contract Vibranium is VUSD, Governable, OFTCore, IOFT {
         esvibMinter.refreshReward(_toAddress);
 
         uint256 sharesAmount = getSharesByMintedVUSD(_amount);
+        if (sharesAmount == 0) {
+            //VUSD totalSupply is 0: assume that shares correspond to VUSD 1-to-1
+            sharesAmount = _amount;
+        }
         _mintShares(_toAddress, sharesAmount);
 
         _saveReport();
@@ -548,6 +552,10 @@ contract Vibranium is VUSD, Governable, OFTCore, IOFT {
     function mintSwap(address _account, uint _amount) external {
         require(msg.sender == rvUSD, "INPUT_WRONG");
         uint256 sharesAmount = getSharesByMintedVUSD(_amount);
+        if (sharesAmount == 0) {
+            //VUSD totalSupply is 0: assume that shares correspond to VUSD 1-to-1
+            sharesAmount = _amount;
+        }
         esvibMinter.refreshReward(_account);
         _mintShares(_account, sharesAmount);
         _saveReport();
